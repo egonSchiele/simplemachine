@@ -1,0 +1,45 @@
+{
+  "name": "graph",
+  "version": "0.0.21",
+  "description": "A parser combinator library for TypeScript, inspired by Parsec.",
+  "homepage": "https://github.com/egonSchiele/graph",
+  "scripts": {
+    "test": "vitest",
+    "test:tsc": "tsc -p tests/tsconfig.json",
+    "coverage": "vitest --coverage",
+    "build": "rm -rf dist && tsc",
+    "start": "cd dist && node index.js",
+    "doc": "typedoc --disableSources --out docs lib && prettier docs/ --write",
+    "doc:prettier": "prettier docs/ --write"
+  },
+  "files": [
+    "./dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "graph",
+    "dataflow",
+    "react"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.19.27",
+    "@vitest/coverage-v8": "^1.6.1",
+    "prettier": "3.2.5",
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.1"
+  },
+  "dependencies": {
+    "nanoid": "^5.1.6",
+    "termcolors": "github:egonSchiele/termcolors"
+  }
+}

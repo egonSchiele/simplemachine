@@ -11,9 +11,9 @@ export declare class StatelogClient {
         startNode?: string;
     }): void;
     enterNode(nodeId: string, data: any): void;
-    exitNode(nodeId: string, data: any): void;
-    beforeHook(nodeId: string, startData: any, endData: any): void;
-    afterHook(nodeId: string, startData: any, endData: any): void;
+    exitNode(nodeId: string, data: any, timeTaken?: number): void;
+    beforeHook(nodeId: string, startData: any, endData: any, timeTaken?: number): void;
+    afterHook(nodeId: string, startData: any, endData: any, timeTaken?: number): void;
     followEdge(fromNodeId: string, toNodeId: string, isConditionalEdge: boolean, data: any): void;
     post(body: Record<string, any>): void;
 }

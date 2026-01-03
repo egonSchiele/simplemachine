@@ -29,27 +29,30 @@ export class StatelogClient {
             data,
         });
     }
-    exitNode(nodeId, data) {
+    exitNode(nodeId, data, timeTaken) {
         this.post({
             type: "exitNode",
             nodeId,
             data,
+            timeTaken,
         });
     }
-    beforeHook(nodeId, startData, endData) {
+    beforeHook(nodeId, startData, endData, timeTaken) {
         this.post({
             type: "beforeHook",
             nodeId,
             startData,
             endData,
+            timeTaken,
         });
     }
-    afterHook(nodeId, startData, endData) {
+    afterHook(nodeId, startData, endData, timeTaken) {
         this.post({
             type: "afterHook",
             nodeId,
             startData,
             endData,
+            timeTaken,
         });
     }
     followEdge(fromNodeId, toNodeId, isConditionalEdge, data) {

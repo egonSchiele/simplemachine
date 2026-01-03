@@ -75,19 +75,25 @@ export class Graph {
                 if ((_b = this.config.hooks) === null || _b === void 0 ? void 0 : _b.beforeNode) {
                     this.debug(`Before hook for node: ${color.green(currentId)}`, data);
                     const startData = data;
+                    const startTime = performance.now();
                     data = yield this.config.hooks.beforeNode(currentId, data);
-                    (_c = this.statelogClient) === null || _c === void 0 ? void 0 : _c.beforeHook(currentId, startData, data);
+                    const endTime = performance.now();
+                    (_c = this.statelogClient) === null || _c === void 0 ? void 0 : _c.beforeHook(currentId, startData, data, endTime - startTime);
                 }
                 this.debug(`Executing node: ${color.green(currentId)}`, data);
                 (_d = this.statelogClient) === null || _d === void 0 ? void 0 : _d.enterNode(currentId, data);
+                const startTime = performance.now();
                 data = yield this.runAndValidate(nodeFunc, currentId, data);
-                (_e = this.statelogClient) === null || _e === void 0 ? void 0 : _e.exitNode(currentId, data);
+                const endTime = performance.now();
+                (_e = this.statelogClient) === null || _e === void 0 ? void 0 : _e.exitNode(currentId, data, endTime - startTime);
                 this.debug(`Completed node: ${color.green(currentId)}`, data);
                 if ((_f = this.config.hooks) === null || _f === void 0 ? void 0 : _f.afterNode) {
                     this.debug(`After hook for node: ${color.green(currentId)}`, data);
                     const startData = data;
+                    const startTime = performance.now();
                     data = yield this.config.hooks.afterNode(currentId, data);
-                    (_g = this.statelogClient) === null || _g === void 0 ? void 0 : _g.afterHook(currentId, startData, data);
+                    const endTime = performance.now();
+                    (_g = this.statelogClient) === null || _g === void 0 ? void 0 : _g.afterHook(currentId, startData, data, endTime - startTime);
                 }
                 const edges = this.edges[currentId] || [];
                 for (const edge of edges) {

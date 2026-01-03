@@ -1,4 +1,4 @@
-import { color } from 'termcolors';
+import { color } from "termcolors";
 
 import { GraphError } from "./error.js";
 import {
@@ -11,8 +11,8 @@ import {
   JSONEdge,
   regularEdge,
 } from "./types.js";
-import { runtime } from './utils.js';
-import { getStatelogClient, StatelogClient } from './statelog.js';
+import { runtime } from "./utils.js";
+import { getStatelogClient, StatelogClient } from "./statelog.js";
 
 export class Graph<T, N extends string> {
   private nodes: Partial<Record<N, (data: T) => Promise<T>>> = {};
@@ -58,7 +58,7 @@ export class Graph<T, N extends string> {
       console.log(debugStr);
     }
     this.statelogClient.log({
-      type: "graph_debug",
+      type: "debug",
       message: str,
       data: data,
       timestamp: new Date().toISOString(),
@@ -68,10 +68,11 @@ export class Graph<T, N extends string> {
   async run(startId: N, input: T): Promise<T> {
     const jsonEdges: Record<string, JSONEdge[]> = {};
     for (const from in this.edges) {
-      jsonEdges[from] = this.edges[from as keyof typeof this.edges]!.map(edgeToJSON);
+      jsonEdges[from] =
+        this.edges[from as keyof typeof this.edges]!.map(edgeToJSON);
     }
     this.statelogClient.log({
-      type: "graph_run_start",
+      type: "graph",
       nodes: Object.keys(this.nodes),
       edges: jsonEdges,
       startNode: startId,
@@ -108,7 +109,10 @@ export class Graph<T, N extends string> {
           this.debug(`Following regular edge to: ${color.green(edge.to)}`);
         } else {
           const nextId = await edge.condition(data);
-          this.debug(`Following conditional edge to: ${color.green(nextId)}`, data);
+          this.debug(
+            `Following conditional edge to: ${color.green(nextId)}`,
+            data
+          );
           stack.push(nextId);
         }
       }
@@ -134,7 +138,8 @@ export class Graph<T, N extends string> {
           );
         }
         this.debug(
-          `Validation failed for node ${color.green(currentId)}, retrying... (${retries + 1
+          `Validation failed for node ${color.green(currentId)}, retrying... (${
+            retries + 1
           }/${maxRetries})`,
           data
         );

@@ -1,6 +1,7 @@
 import { color } from "termcolors";
 
 import { GraphError } from "./error.js";
+import { StatelogClient } from "./statelog.js";
 import {
   conditionalEdge,
   ConditionalFunc,
@@ -11,17 +12,20 @@ import {
   JSONEdge,
   regularEdge,
 } from "./types.js";
-import { runtime } from "./utils.js";
-import { getStatelogClient, StatelogClient } from "./statelog.js";
 
 export class Graph<T, N extends string> {
   private nodes: Partial<Record<N, (data: T) => Promise<T>>> = {};
   private edges: Partial<Record<N, Edge<T, N>[]>> = {};
   private config: GraphConfig<T>;
-  private statelogClient: StatelogClient;
+  private statelogClient: StatelogClient | null = null;
   constructor(nodes: readonly N[], config: GraphConfig<T> = {}) {
     this.config = config;
-    this.statelogClient = getStatelogClient();
+    if (config.statelogHost) {
+      this.statelogClient = new StatelogClient(
+        config.statelogHost,
+        config.debug?.log ?? false
+      );
+    }
   }
 
   node(id: N, func: (data: T) => Promise<T>): void {
@@ -49,20 +53,15 @@ export class Graph<T, N extends string> {
     this.edges[from].push(conditionalEdge(to, adjacentNodes));
   }
 
-  debug(str: string, data?: T): void {
-    let debugStr = `${color.magenta("[DEBUG]")}: ${str}`;
+  debug(message: string, data?: T): void {
+    let debugStr = `${color.magenta("[DEBUG]")}: ${message}`;
     if (this.config.debug?.logData && data !== undefined) {
       debugStr += ` | Data: ${color.green(JSON.stringify(data))}`;
     }
     if (this.config.debug?.log) {
       console.log(debugStr);
     }
-    this.statelogClient.log({
-      type: "debug",
-      message: str,
-      data: data,
-      timestamp: new Date().toISOString(),
-    });
+    this.statelogClient?.logDebug(message, data || {});
   }
 
   async run(startId: N, input: T): Promise<T> {
@@ -71,12 +70,10 @@ export class Graph<T, N extends string> {
       jsonEdges[from] =
         this.edges[from as keyof typeof this.edges]!.map(edgeToJSON);
     }
-    this.statelogClient.log({
-      type: "graph",
+    this.statelogClient?.logGraph({
       nodes: Object.keys(this.nodes),
       edges: jsonEdges,
       startNode: startId,
-      timestamp: new Date().toISOString(),
     });
     const stack: N[] = [startId];
     let data: T = input;

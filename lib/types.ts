@@ -11,6 +11,7 @@ export type GraphConfig<T> = {
     beforeNode?: (nodeId: string, data: T) => Promise<T>;
     afterNode?: (nodeId: string, data: T) => Promise<T>;
   };
+  statelogHost?: string;
 };
 
 export type NodeId = string;

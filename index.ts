@@ -1,5 +1,4 @@
 import { Graph } from "./lib/graph.js";
-import "./lib/envFile.js";
 // The state type for our graph
 type State = {
   count: number;

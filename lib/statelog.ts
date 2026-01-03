@@ -35,11 +35,9 @@ export class StatelogClient {
   }): void {
     this.post({
       type: "graph",
-      data: {
-        nodes,
-        edges,
-        startNode,
-      },
+      nodes,
+      edges,
+      startNode,
     });
   }
 

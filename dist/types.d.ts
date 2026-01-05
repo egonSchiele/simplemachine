@@ -12,6 +12,7 @@ export type GraphConfig<T> = {
         afterNode?: (nodeId: string, data: T) => Promise<T>;
     };
     statelogHost?: string;
+    traceId?: string;
 };
 export type NodeId = string;
 export type Edge<T, N extends string> = RegularEdge<N> | ConditionalEdge<T, N>;
